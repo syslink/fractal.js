@@ -1,7 +1,7 @@
 {
-  "name": "ethers",
-  "version": "4.0.27",
-  "description": "Ethereum wallet library.",
+  "name": "fractal-ftoken",
+  "version": "1.0.0",
+  "description": "Fractal wallet library.",
   "main": "./index.js",
   "types": "./index.d.ts",
   "scripts": {
@@ -59,10 +59,10 @@
     "library",
     "wallet"
   ],
-  "author": "Richard Moore <me@ricmoo.com>",
+  "author": "Sam Yu <yu_single@163.com>",
   "repository": {
     "type": "git",
-    "url": "git://github.com/ethers-io/ethers.js.git"
+    "url": "git://github.com/syslink/fractal.js.git"
   },
   "license": "MIT"
 }

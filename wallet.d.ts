@@ -31,5 +31,5 @@ export declare class Wallet extends AbstractSigner {
      */
     static createRandom(options?: any): Wallet;
     static fromEncryptedJson(json: string, password: Arrayish, progressCallback?: ProgressCallback): Promise<Wallet>;
-    static fromMnemonic(mnemonic: string, path?: string, wordlist?: Wordlist): Wallet;
+    static fromMnemonic(mnemonic: string, path?: string, password?: string, wordlist?: Wordlist): Wallet;
 }
