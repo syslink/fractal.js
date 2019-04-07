@@ -148,7 +148,7 @@ var Wallet = /** @class */ (function (_super) {
             entropy = bytes_1.arrayify(keccak256_1.keccak256(bytes_1.concat([entropy, options.extraEntropy])).substring(0, 34));
         }
         var mnemonic = hdnode_1.entropyToMnemonic(entropy, options.locale);
-        return Wallet.fromMnemonic(mnemonic, options.path, options.locale);
+        return Wallet.fromMnemonic(mnemonic, options.path, null, options.locale);
     };
     Wallet.fromEncryptedJson = function (json, password, progressCallback) {
         if (json_wallet_1.isCrowdsaleWallet(json)) {
