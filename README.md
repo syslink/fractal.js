@@ -1,105 +1,88 @@
-ethers.js
-=========
-
-[![npm version](https://badge.fury.io/js/ethers.svg)](https://badge.fury.io/js/ethers)
-
-Complete Ethereum wallet implementation and utilities in JavaScript (and TypeScript).
-
-**Features:**
-
-- Keep your private keys in your client, **safe** and sound
-- Import and export **JSON wallets** (Geth, Parity and crowdsale)
-- Import and export BIP 39 **mnemonic phrases** (12 word backup phrases) and **HD Wallets** (English, French, Italian, Japanese, Korean, Simplified Chinese, Spanish, Traditional Chinese)
-- Meta-classes create JavaScript objects from any contract ABI, including **ABIv2** and **Human-Readable ABI**
-- Connect to Ethereum nodes over [JSON-RPC](https://github.com/ethereum/wiki/wiki/JSON-RPC), [INFURA](https://infura.io), [Etherscan](https://etherscan.io), or [MetaMask](https://metamask.io)
-- **ENS names** are first-class citizens; they can be used anywhere an Ethereum addresses can be used
-- **Tiny** (~84kb compressed; 270kb uncompressed)
-- **Complete** functionality for all your Ethereum needs
-- Extensive [documentation](https://docs.ethers.io/ethers.js/html/)
-- Large collection of **test cases** which are maintained and added to
-- Fully **TypeScript** ready, with definition files and full TypeScript source
-- **MIT License** (including ALL dependencies); completely open source to do with as you please
-
-
-Keep Updated
-------------
-
-For the latest news and advisories, please follow [@ethersproject](https://twitter.com/ethersproject) on Twitter as well as this GitHub project.
-
-
-Installing
-----------
-
-To use in a browser:
-
-```html
-<script charset="utf-8"
-        src="https://cdn.ethers.io/scripts/ethers-v4.min.js"
-        type="text/javascript">
-</script>
-```
-
-To use in [node.js](https://nodejs.org/):
+安装及引用：
 
 ```
-/Users/ethers/my-app> npm install --save ethers
+npm i fractal-web3 -S
+
+import * as fractal from 'fractal-web3'; 
 ```
 
-
-Documentation
--------------
-
-Browse the [API Documentation](https://docs.ethers.io/ethers.js/html/) online.
-
-To fork and submit pull requests to the documentation, please see the
-[documentation repository](https://github.com/ethers-io/documentation).
-
-
-Related Libraries
----------------
-
-- [Command Line Interface](https://github.com/ethers-io/ethers-cli) - Command Line Tools for ethers
-- [CryptoKitties](https://github.com/ricmoo/ethers-meow) - CryptoKitties utility libraries
-- [ENS](https://github.com/ethers-io/ethers-ens) - ENS utility libraries for managing names
-- [LedgerSigner](https://github.com/ethers-io/ethers-ledger) - Use a Ledger Hardware Wallet as an ethers Signer (supports HID (node.js) and U2F (browser); or specify your own transport)
-- [Web3 Bridge](https://github.com/ethers-io/ethers-web3-bridge) - Use ethers as the backend for a Web3 front-end
+根据rpc功能划分了不同的域：
+- fractal.account.*: 包括查看账户、资产等功能
+- fractal.dpos.*: 包括查看竞选、出块节点信息以及dpos共识相关信息等功能
+- fractal.ft.*: 包括查看区块、交易信息以及签名、发送交易等功能
+- fractal.fee.*: 包括查看不同账户手续费的功能
+- fractal.miner.*: 包括启动挖矿、停止挖矿、设置coinbase等功能
+- fractal.p2p.*: 包括增加、删除节点等功能
+- fractal.txpool.*: 包括获取txpool信息以及设置gas price等功能
+- fractal.utils.*: 包括rlp编码、合约payload编码等功能
 
 
-Hacking and Contributing
-------------------------
-
-The JavaScript code is now generated from TypeScript, so make sure you modify the
-TypeScript and compile it, rather than modifying the JavaScript directly. To start
-auto-compiling the TypeScript code, you may use:
+demo1：设置节点信息、查看账户信息
 
 ```
-/home/ethers> npm run auto-build
+import * as fractal from 'fractal-web3';
+
+const nodeInfo = 'htp://127.0.0.1:8545';  
+fractal.utils.setProvider(nodeInfo);  //设置节点rpc信息
+
+try {
+  const accountInfo = await fractal.account.getAccountByName('fractal.admin');
+  ...
+} catch (error) {
+  console(error);  
+}
+
 ```
+demo2: 发送多签名交易
 
-A very important part of ethers is its exhaustive test cases, so before making any
-bug fix, please add a test case that fails prior to the fix, and succeeds after the
-fix. All regression tests must pass.
+```
+import * as fractal from 'fractal-web3';
 
-Pull requests are always welcome, but please keep a few points in mind:
+// 交易完整结构体：{chainId, gasAssetId, gasPrice, actions:[{actionType, accountName, nonce, gasLimit, toAccountName, assetId, amount, payload, remark}]}
+// 其中chainId, gasAssetId, nonce, payload 以及 remark这几个参数如果不传，sdk会根据实际情况自动填充
+txInfo = {...}
+signInfo1 = fractal.ft.signTx(txInfo, privateKey1);  //获取第一个签名
+signInfo2 = fractal.ft.signTx(txInfo, privateKey2);  //获取第二个签名
+multiSignInfos = [{signInfo1, [0]}, {signInfo2, [1]}];
+fractal.ft.sendMultiSigTransaction(txInfo, multiSignInfos).then(txHash => {...}).catch(error => {...});  // 发送多签名交易
+```
+demo3: 发送单签名交易
 
-- Compatibility-breaking changes will not be accepted; they may be considered for the next major version
-- Security is important; adding dependencies require fairly convincing arguments
-- The library aims to be lean, so keep an eye on the `dist/ethers.min.js` file size before and after your changes
-- Add test cases for both expected and unexpected input
-- Any new features need to be supported by us (issues, documentation, testing), so anything that is overly complicated or specific may not be accepted
+```
+import * as fractal from 'fractal-web3';
 
-In general, **please start an issue before beginning a pull request**, so we can have a public discussion. :)
+txInfo = {...}
+signInfo1 = fractal.ft.signTx(txInfo, privateKey1);
+fractal.ft.sendSingleSigTransaction(txInfo, signInfo1).then(txHash => {...}).catch(error => {...});
+```
+demo4: 合约方法调用
+- 合约代码：
+```
+contract hello {
+    string greeting;
+    
+    function hello(string _greeting) public {
+        greeting = _greeting;
+    }
 
+    function say() constant public returns (string) {
+        return greeting;
+    }
+}
+```
+- sdk调用方式
 
-Donations
----------
+```
+import * as fractal from 'fractal-web3';
 
-I do this because I love it, but if you want to buy me a coffee, I won't say no. **:o)**
+// 调用合约的hello方法
+const payload = fractal.utils.getContractPayload('hello', ['string'], ['fractal blockchain']); //payload会填入txInfo中
+const txInfo = {...}  // 构造合约交易对象
+signInfo1 = fractal.ft.signTx(txInfo, privateKey1);
+fractal.ft.sendSingleSigTransaction(txInfo, signInfo1).then(txHash => {...}).catch(error => {...});
 
-Ethereum: `0xEA517D5a070e6705Cc5467858681Ed953d285Eb9`
-
-
-License
--------
-
-Completely MIT Licensed. Including ALL dependencies.
+// 调用合约的say方法，由于say是一个constant类型的方法，只需要从链上读取数据，因此不需要发送交易，只要调用rpc中的call方法即可获得结果
+const payload = fractal.utils.getContractPayload('say', [], []);
+const callInfo = {actionType:0, from:'youraccount', to: 'contractAccountName', assetId:0, gas:100000, gasPrice:10, value:100, data:payload, remark:''};
+fractal.ft.call(callInfo, 'latest').then(result=>{...});
+```
