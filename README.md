@@ -15,10 +15,10 @@ import * as fractal from 'fractal-web3';
 - fractal.p2p.*: 包括增加、删除节点等功能
 - fractal.txpool.*: 包括获取txpool信息以及设置gas price等功能
 - fractal.utils.*: 包括rlp编码、合约payload编码等功能
-
+> rpc文档：https://github.com/fractalplatform/fractal/wiki/JSON-RPC
 
 demo1：设置节点信息、查看账户信息
-
+> 节点rpc默认是htp://127.0.0.1:8545，如不是，必须先设置好节点信息，才可进行后续操作
 ```
 import * as fractal from 'fractal-web3';
 
