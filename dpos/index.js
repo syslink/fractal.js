@@ -10,6 +10,16 @@ export async function getCandidate(accountName) {
   });
 }
 
+export async function getCandidateByHeight(blockHeight, accountName) {
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    method: 'dpos_candidateByHeight',
+    params: [blockHeight, accountName],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
+
 export async function getCandidates(bDetailInfo) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     method: 'dpos_candidates',
@@ -40,7 +50,7 @@ export async function getDposIrreversibleInfo() {
   });
 }
 
-export async function getValidateCandidates() {
+export async function getValidCandidates() {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     method: 'dpos_validCandidates',
     params: [],
@@ -50,10 +60,10 @@ export async function getValidateCandidates() {
   });
 }
 
-export async function getValidCandidatesByHeight(blockNum) {
+export async function getValidCandidatesByHeight(blockHeight) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     method: 'dpos_validCandidatesByHeight',
-    params: [blockNum],
+    params: [blockHeight],
     id: 1 });
   return utils.postToNode({
     data: dataToSrv,
@@ -70,6 +80,17 @@ export async function getAvailableStake(accountName) {
   });
 }
 
+export async function getAvailableStakeByHeight(blockHeight, accountName) {
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    method: 'dpos_availableStake',
+    params: [blockHeight, accountName],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
+
+// get all voters info who vote to the candidate
 export async function getVotersByCandidate(candidateName, bDetailInfo) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     method: 'dpos_votersByCandidate',
@@ -90,27 +111,69 @@ export async function getVotersByCandidateByHeight(blockHeight, candidateName, b
   });
 }
 
-export async function getVotersByVoter(candidateName, bDetailInfo) {
+// get voter's all vote info
+export async function getVotersByVoter(voterName, bDetailInfo) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     method: 'dpos_votersByVoter',
-    params: [candidateName, bDetailInfo],
+    params: [voterName, bDetailInfo],
     id: 1 });
   return utils.postToNode({
     data: dataToSrv,
   });
 }
 
-export async function getVotersByVoterByHeight(blockHeight, candidateName, bDetailInfo) {
+export async function getVotersByVoterByHeight(blockHeight, voterName, bDetailInfo) {
   const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
     method: 'dpos_votersByVoterByHeight',
-    params: [blockHeight, candidateName, bDetailInfo],
+    params: [blockHeight, voterName, bDetailInfo],
     id: 1 });
   return utils.postToNode({
     data: dataToSrv,
   });
 }
 
+export async function getNextValidCandidates() {
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    method: 'dpos_nextValidCandidates',
+    params: [],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
 
-export default { getCandidate, getCandidates, getDposInfo, getDposIrreversibleInfo, 
-  getValidateCandidates, getValidCandidatesByHeight, getAvailableStake, getVotersByCandidate,
-  getVotersByCandidateByHeight, getVotersByVoter, getVotersByVoterByHeight };
+export async function getNextValidCandidatesByHeight(blockHeight) {
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    method: 'dpos_nextValidCandidatesByHeight',
+    params: [blockHeight],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
+
+export async function getSnapShotTime() {
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    method: 'dpos_snapShotTime',
+    params: [],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
+
+export async function getSnapShotTimeByHeight(blockHeight) {
+  const dataToSrv = JSON.stringify({ jsonrpc: '2.0',
+    method: 'dpos_snapShotTimeByHeight',
+    params: [blockHeight],
+    id: 1 });
+  return utils.postToNode({
+    data: dataToSrv,
+  });
+}
+
+export default { getCandidate, getCandidateByHeight, getDposIrreversibleInfo, getCandidates, 
+  getVotersByCandidate, getVotersByCandidateByHeight, getVotersByVoter, getVotersByVoterByHeight,
+  getAvailableStake, getAvailableStakeByHeight, getValidCandidates, getValidCandidatesByHeight,
+  getDposInfo, getNextValidCandidates, getNextValidCandidatesByHeight, getSnapShotTime, getSnapShotTimeByHeight, 
+   };
