@@ -177,7 +177,7 @@ function getRSV(signature) {
   return { r, s, v };
 }
 
-function packTx(txInfo) {
+async function packTx(txInfo) {
   if (txInfo.nonce == null) {
     txInfo.nonce = await account.getNonce(txInfo.accountName);
   }
